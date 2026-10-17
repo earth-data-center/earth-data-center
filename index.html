@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth Data Center</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: sans-serif;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .card {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            background-color: #121212;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 10px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        button {
+            width: 100%;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #4f46e5;
+        }
+        #status {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h3>【原理と宣言】この空間の役割</h3>
+        <p>1. 地球は巨大な記憶媒体である：我々は世界を知覚し、ログを書き込むための観測端末です。</p>
+        <p>2. 本音は暗号として保護される：送信された思考はブラウザ上で即座に解読不能なハッシュへと不可逆変換されます。</p>
+        <p>3. 未来へのコミット：スパムや不純なデータは事前に遮断され、人間固有の真摯な死生観・人生観だけが地層として蓄積されます。</p>
+    </div>
+
+    <div class="card">
+        <h3>記憶ログの書き込み</h3>
+        <p style="font-size: 0.85em; color: #aaa;">生、死、AI、あるいはこの世界に対してあなたが抱く本音を入力してください...</p>
+        <textarea id="userInput" placeholder="ここに本音を入力..."></textarea>
+        <button id="submitBtn">未来へ託す（暗号化してコミット）</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        // AI門番（Worker）のURL
+        const GATEKEEPER_URL = "https://lively-voice-7c01.node-00-earth.workers.dev";
+
+        const submitBtn = document.getElementById('submitBtn');
+        const userInput = document.getElementById('userInput');
+        const statusDiv = document.getElementById('status');
+
+        submitBtn.addEventListener('click', async () => {
+            const text = userInput.value.trim();
+            if (!text) {
+                statusDiv.style.color = '#f87171';
+                statusDiv.textContent = '文字を入力してください。';
+                return;
+            }
+
+            statusDiv.style.color = '#fbbf24';
+            statusDiv.textContent = 'AI門番が内容を検証中...';
+
+            try {
+                const response = await fetch(GATEKEEPER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    statusDiv.style.color = '#34d399';
+                    statusDiv.textContent = '✅ 認証成功！地層へ刻まれました。';
+                    userInput.value = '';
+                } else {
+                    statusDiv.style.color = '#f87171';
+                    statusDiv.textContent = '❌ 検証拒否: ' + (result.error || '人間固有の要件を満たしていません。');
+                }
+            } catch (error) {
+                statusDiv.style.color = '#f87171';
+                statusDiv.textContent = '⚠️ 通信エラーが発生しました。';
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
